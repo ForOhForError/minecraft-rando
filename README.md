@@ -42,3 +42,7 @@ Note that:
 ## Datapack installation
 
 See instructions [here](https://minecraft.fandom.com/wiki/Tutorials/Installing_a_data_pack).
+
+## Credit
+
+Based on [SethBling's 1.14 randomizer script](https://www.youtube.com/watch?v=3JEXAZOrykQ).
