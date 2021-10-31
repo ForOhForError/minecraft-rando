@@ -24,7 +24,7 @@ def get_childfiles(inzip, subpath):
 	result_list = [
 		path for path in all_files if 
 		path.startswith(subpath) and
-		zipfile.Path(inzip, path).is_file()
+		not inzip.getinfo(path).is_dir()
 	]
 	return result_list
 
@@ -82,8 +82,6 @@ def main(sysargs):
 	all_files = minecraft_jar.namelist()
 	loot_file_dict = random_remapping(get_childfiles(minecraft_jar, 'data/minecraft/loot_tables/'))
 	craft_file_dict = random_remapping(get_childfiles(minecraft_jar, 'data/minecraft/recipes/'))
-	minecraft_jar.close()
-	minecraft_jar = zipfile.ZipFile(args.jarfile)
 	
 	zipbytes = io.BytesIO()
 	pack = zipfile.ZipFile(zipbytes, 'w', zipfile.ZIP_DEFLATED, False)
