@@ -5,6 +5,10 @@ import zipfile
 import json
 import sys
 import argparse
+import re
+
+DEFAULT_LOOT_BLACKLIST = ['.*_shulker_box\.json']
+DEFAULT_CRAFTING_BLACKLIST = []
 
 def random_remapping(path_list):
 	file_list = []
@@ -19,13 +23,16 @@ def random_remapping(path_list):
 		del remaining[i]
 	return file_dict
 
-def get_childfiles(inzip, subpath):
+def get_childfiles(inzip, subpath, blacklist=[]):
 	all_files = inzip.namelist()
-	result_list = [
-		path for path in all_files if 
-		path.startswith(subpath) and
-		not inzip.getinfo(path).is_dir()
-	]
+	result_list = []
+	blacklist = [re.compile(pattern) for pattern in blacklist]
+	for path in all_files:
+		last_path = path.split('/')[-1]
+		if path.startswith(subpath) and not inzip.getinfo(path).is_dir() and all(
+			[not pattern.fullmatch(last_path) for pattern in blacklist]
+		):
+			result_list.append(path)
 	return result_list
 
 def randomize_crafting(inzip, outzip, craft_file_dict, passnum=1):
@@ -54,21 +61,37 @@ def randomize_crafting(inzip, outzip, craft_file_dict, passnum=1):
 def main(sysargs):
 	parser = argparse.ArgumentParser(description='Generate a randomizer datapack.')
 	parser.add_argument(
-		'-s', '--seed', type=int, help='randomization seed'
+		'-s', '--seed', help='Randomization seed; defaults to a random value'
 	)
 	parser.add_argument(
-		'--loot', help='randomize loot tables', action='store_true'
+		'-l', '--loot', help='Randomize loot tables; defaults to false.', action='store_true'
 	)
 	parser.add_argument(
-		'--crafting', help='randomize crafting recipes', action='store_true'
+		'-c', '--crafting', help='Randomize crafting recipes; defaults to false.', action='store_true'
 	)
 	parser.add_argument(
-		'-o', '--output', help='output file', default='mc_random.zip'
+		'-o', '--output', help='Output file; defaults to mc_random.zip', default='mc_random.zip'
+	)
+	parser.add_argument(
+		'--loot-blacklist', 
+		help='Regex patterns to exclude from loot randomization; defaults to excluding shulker boxes.',
+		nargs='*', default=DEFAULT_LOOT_BLACKLIST
+	)
+	parser.add_argument(
+		'--crafting-blacklist', 
+		help='Regex patterns to exclude from loot randomization; defaults to empty.',
+		nargs='*', default=DEFAULT_CRAFTING_BLACKLIST
 	)
 	parser.add_argument('jarfile', type=str, help='path to minecraft jar file')
 	args = parser.parse_args()
 	datapack_name = 'mc_random'
 	datapack_desc = 'Minecraft Randomizer'
+
+	if not (args.loot or args.crafting):
+		print("------------------------------------------- WARNING ---------------------------------------------------")
+		print("Neither --crafting nor --loot was specified; the generated datapack file is valid but will do nothing")
+		print("This is probably not what you intended! Please use the --help flag for more information.")
+		print("-------------------------------------------------------------------------------------------------------")
 
 	if args.seed:
 		seed = args.seed
@@ -80,8 +103,8 @@ def main(sysargs):
 
 	minecraft_jar = zipfile.ZipFile(args.jarfile)
 	all_files = minecraft_jar.namelist()
-	loot_file_dict = random_remapping(get_childfiles(minecraft_jar, 'data/minecraft/loot_tables/'))
-	craft_file_dict = random_remapping(get_childfiles(minecraft_jar, 'data/minecraft/recipes/'))
+	loot_file_dict = random_remapping(get_childfiles(minecraft_jar, 'data/minecraft/loot_tables/', blacklist=args.loot_blacklist))
+	craft_file_dict = random_remapping(get_childfiles(minecraft_jar, 'data/minecraft/recipes/', blacklist=args.crafting_blacklist))
 	
 	zipbytes = io.BytesIO()
 	pack = zipfile.ZipFile(zipbytes, 'w', zipfile.ZIP_DEFLATED, False)
