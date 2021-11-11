@@ -10,6 +10,11 @@ import re
 DEFAULT_LOOT_BLACKLIST = ['.*_shulker_box\.json']
 DEFAULT_CRAFTING_BLACKLIST = []
 
+TICK_FUNCTION = [
+	'execute as @a[tag=!learnedallrecipes] run recipe give @a *',
+	'tag @a[tag=!learnedallrecipes] add learnedallrecipes'
+]
+
 def random_remapping(path_list):
 	file_list = []
 	remaining = []
@@ -82,6 +87,11 @@ def main(sysargs):
 		help='Regex patterns to exclude from loot randomization; defaults to empty.',
 		nargs='*', default=DEFAULT_CRAFTING_BLACKLIST
 	)
+	parser.add_argument(
+		'--unlock-recipes', 
+		help='Adds a function to the datapack to grant players all recipes on joining the server. Defaults to false.',
+		action='store_true'
+	)
 	parser.add_argument('jarfile', type=str, help='path to minecraft jar file')
 	args = parser.parse_args()
 	datapack_name = 'mc_random'
@@ -111,6 +121,10 @@ def main(sysargs):
 	pack.writestr('pack.mcmeta', json.dumps({'pack':{'pack_format':1, 'description':datapack_desc}}, indent=4))
 	pack.writestr('data/minecraft/tags/functions/load.json', json.dumps({'values':['{}:reset'.format(datapack_name)]}))
 	pack.writestr('data/{}/functions/reset.mcfunction'.format(datapack_name), 'tellraw @a ["",{"text":"Minecraft randomizer by ForOhForError, original by SethBling","color":"blue"}]')
+
+	if args.unlock_recipes:
+		pack.writestr('data/minecraft/tags/functions/tick.json', json.dumps({'values':['{}:giveallrecipes'.format(datapack_name)]}))
+		pack.writestr('data/{}/functions/giveallrecipes.mcfunction'.format(datapack_name), '\n'.join(TICK_FUNCTION))
 
 	if args.loot:
 		for from_file in loot_file_dict:

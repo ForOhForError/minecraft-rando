@@ -45,6 +45,7 @@ optional arguments:
                         Regex patterns to exclude from loot randomization; defaults to excluding shulker boxes.
   --crafting-blacklist [CRAFTING_BLACKLIST [CRAFTING_BLACKLIST ...]]
                         Regex patterns to exclude from loot randomization; defaults to empty.
+  --unlock-recipes      Adds a function to the datapack to grant players all recipes on joining the server. Defaults to false.
 
 ```
 
