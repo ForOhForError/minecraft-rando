@@ -15,6 +15,14 @@ git clone https://github.com/ForOhForError/minecraft-rando
 
 ```
 
+Or download it directly with ```wget```
+
+```bash
+
+wget https://raw.githubusercontent.com/ForOhForError/minecraft-rando/master/minecraft_randomizer.py
+
+```
+
 Run with the following syntax:
 
 ```bash
