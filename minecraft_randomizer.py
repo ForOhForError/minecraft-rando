@@ -133,17 +133,17 @@ def main(sysargs):
 	)
 	parser.add_argument(
 		'--loot-blacklist', 
-		help='Regex patterns to exclude from loot randomization; defaults to excluding shulker boxes.',
+		help='List of regex patterns to exclude from loot randomization; defaults to excluding shulker boxes.',
 		nargs='*', default=DEFAULT_LOOT_BLACKLIST
 	)
 	parser.add_argument(
 		'--crafting-blacklist', 
-		help='Regex patterns to exclude from loot randomization; defaults to empty.',
+		help='List of regex patterns to exclude from loot randomization; defaults to empty.',
 		nargs='*', default=DEFAULT_CRAFTING_BLACKLIST
 	)
 	parser.add_argument(
 		'--loot-categories', 
-		help='Loot categories to randomize. Choices are [blocks | chests | entities | gameplay]. Defaults to all categories.',
+		help='List of loot categories to randomize. Choices are [blocks | chests | entities | gameplay]. Defaults to all categories.',
 		choices=LOOT_CATEGORIES,
 		nargs='*', default=DEFAULT_LOOT_CATEGORIES
 	)
@@ -154,7 +154,7 @@ def main(sysargs):
 	)
 	parser.add_argument(
 		'--loot-hints', 
-		help='Adds unusable recipes that show the results of any 1-to-1 drops.',
+		help='Adds unusable "hint" recipes that show the results of any 1-to-1 drops. Defaults to false.',
 		action='store_true'
 	)
 	parser.add_argument('jarfile', type=str, help='path to minecraft jar file')

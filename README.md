@@ -27,7 +27,9 @@ Run with the following syntax:
 
 ```bash
 
-python3 minecraft_randomizer.py [-h] [-s SEED] [-l] [-c] [-o OUTPUT] [--loot-blacklist [LOOT_BLACKLIST [LOOT_BLACKLIST ...]]] [--crafting-blacklist [CRAFTING_BLACKLIST [CRAFTING_BLACKLIST ...]]] jarfile
+python3 minecraft_randomizer.py [-h] [-s SEED] [-l] [-c] [-o OUTPUT] [--loot-blacklist [LOOT_BLACKLIST [LOOT_BLACKLIST ...]]] [--crafting-blacklist [CRAFTING_BLACKLIST [CRAFTING_BLACKLIST ...]]]
+                               [--loot-categories [{blocks,chests,entities,gameplay} [{blocks,chests,entities,gameplay} ...]]] [--unlock-recipes] [--loot-hints]
+                               jarfile
 
 Generate a randomizer datapack.
 
@@ -42,10 +44,13 @@ optional arguments:
   -o OUTPUT, --output OUTPUT
                         Output file; defaults to mc_random.zip
   --loot-blacklist [LOOT_BLACKLIST [LOOT_BLACKLIST ...]]
-                        Regex patterns to exclude from loot randomization; defaults to excluding shulker boxes.
+                        List of regex patterns to exclude from loot randomization; defaults to excluding shulker boxes.
   --crafting-blacklist [CRAFTING_BLACKLIST [CRAFTING_BLACKLIST ...]]
-                        Regex patterns to exclude from loot randomization; defaults to empty.
+                        List of regex patterns to exclude from loot randomization; defaults to empty.
+  --loot-categories [{blocks,chests,entities,gameplay} [{blocks,chests,entities,gameplay} ...]]
+                        List of loot categories to randomize. Choices are [blocks | chests | entities | gameplay]. Defaults to all categories.
   --unlock-recipes      Adds a function to the datapack to grant players all recipes on joining the server. Defaults to false.
+  --loot-hints          Adds unusable "hint" recipes that show the results of any 1-to-1 drops. Defaults to false.
 
 ```
 
